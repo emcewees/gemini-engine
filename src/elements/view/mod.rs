@@ -1,4 +1,5 @@
 //! This module is home to the [`View`] struct, which handles the printing of pixels to an ANSI standard text output
+use std::fmt::Write as Write2; // Import the Write trait from std::fmt
 use crate::utils as crate_utils;
 use std::{
     fmt::{self, Display, Formatter},
@@ -173,3 +174,53 @@ impl Display for View {
         Ok(())
     }
 }
+
+
+impl View {
+    /// Writes the View to a `std::string::String` similar to the implementation of the Display
+    /// trait
+    /// # Errors
+    pub fn to_string(&self) -> Result<String, fmt::Error> {
+        let mut output = String::new(); // Create a String buffer
+
+
+        // Write the escape sequences to clear the terminal
+        output.push_str("\x1b[H\x1b[J");
+        
+        if self.coord_numbers_in_render {
+            let nums: String = (0..self.width)
+                .map(|i| i.to_string().chars().last().unwrap_or(' '))
+                .collect();
+            writeln!(output, " {nums}")?;
+        }
+
+        for y in 0..self.height {
+            if self.coord_numbers_in_render {
+                let num = y.to_string().chars().last().unwrap_or(' ');
+                write!(output, "{num}")?;
+            }
+
+            let row = &self.pixels[self.width * y..self.width * (y + 1)];
+
+            row[0].write_with_prev_and_next(&mut output, None, Some(row[1].modifier))?;
+            for x in 1..(row.len() - 1) {
+                row[x].write_with_prev_and_next(
+                    &mut output,
+                    Some(row[x - 1].modifier),
+                    Some(row[x + 1].modifier),
+                )?;
+            }
+            row[row.len() - 1].write_with_prev_and_next(
+                &mut output,
+                Some(row[row.len() - 2].modifier),
+                None,
+            )?;
+            output.push_str("\r\n"); // Use push_str for new line
+        }
+
+        output.push_str("\x1b[J");
+
+        Ok(output) // Return the constructed string
+    }
+}
+

@@ -3,6 +3,7 @@ mod colour;
 mod modifier;
 pub use colour::Colour;
 pub use modifier::Modifier;
+use std::fmt::Write; // Import the Write trait from std::fmt
 
 /// We use `ColChar` to say exactly what each pixel should look like and what colour it should be. That is, the [`View`](super::super::View)'s canvas is just a vector of `ColChar`s under the hood. `ColChar` has the [`text_char`](ColChar::text_char) and [`modifier`](ColChar::modifier) properties. [`text_char`](ColChar::text_char) is the single ascii character used as the "pixel" when the [`View`](super::super::View) is rendered, whereas [`modifier`](ColChar::modifier) can give that pixel a colour or make it bold/italic
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -113,6 +114,27 @@ impl ColChar {
         };
 
         write!(f, "{}{}{}", modifier, self.text_char, end)
+    }
+    
+    /// Writes the displayed `ColChar`, omitting the `Modifier`s where necessary
+    pub(crate) fn write_with_prev_and_next(
+        self,
+        o: &mut std::string::String,
+        prev_mod: Option<Modifier>,
+        next_mod: Option<Modifier>,
+    ) -> fmt::Result {
+        let modifier = if prev_mod == Some(self.modifier) {
+            Modifier::None
+        } else {
+            self.modifier
+        };
+        let end = if next_mod == Some(self.modifier) {
+            Modifier::None
+        } else {
+            Modifier::END
+        };
+
+        write!(o, "{}{}{}", modifier, self.text_char, end)
     }
 }
 
