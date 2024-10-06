@@ -126,7 +126,8 @@ impl ColChar {
         let modifier = if prev_mod == Some(self.modifier) {
             Modifier::None
         } else {
-            self.modifier
+            Modifier::None
+            // self.modifier
         };
         let end = if next_mod == Some(self.modifier) {
             Modifier::None
