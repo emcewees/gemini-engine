@@ -159,18 +159,23 @@ impl View {
 
             let row = &self.pixels[self.width * y..self.width * (y + 1)];
 
-            row[0].write_with_prev_and_next(&mut output, None, Some(row[1].modifier))?;
+            // very first row
+            row[0].write_with_prev_and_next(&mut output, None, Some(row[1].modifier), 0)?;
+            // all the rows
             for x in 1..(row.len() - 1) {
                 row[x].write_with_prev_and_next(
                     &mut output,
                     Some(row[x - 1].modifier),
                     Some(row[x + 1].modifier),
+                    x % 10
                 )?;
             }
+            // very last row
             row[row.len() - 1].write_with_prev_and_next(
                 &mut output,
                 Some(row[row.len() - 2].modifier),
                 None,
+                ( row.len()-1 ) % 10
             )?;
             output.push_str("\r\n"); // Use push_str for new line
         }
@@ -201,18 +206,20 @@ impl Display for View {
 
             let row = &self.pixels[self.width * y..self.width * (y + 1)];
 
-            row[0].display_with_prev_and_next(f, None, Some(row[1].modifier))?;
+            row[0].display_with_prev_and_next(f, None, Some(row[1].modifier), 0)?;
             for x in 1..(row.len() - 1) {
                 row[x].display_with_prev_and_next(
                     f,
                     Some(row[x - 1].modifier),
                     Some(row[x + 1].modifier),
+                    x % 10
                 )?;
             }
             row[row.len() - 1].display_with_prev_and_next(
                 f,
                 Some(row[row.len() - 2].modifier),
                 None,
+                (row.len()-1) % 10
             )?;
             f.write_str("\r\n")?;
         }

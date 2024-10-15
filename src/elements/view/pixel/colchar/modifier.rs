@@ -19,17 +19,23 @@ impl Modifier {
     /// An END code, this clears all previously applied modifiers. You should never have to use this yourself as `View` makes use of it between pixels where necessary
     pub const END: Self = Self::Coded(0);
     /// A `Modifier` with a red ANSI escape code
+    // pub const RED: Self = Self::Coded(0);
     pub const RED: Self = Self::Coded(31);
     /// A Modifier with a green ANSI escape code
-    pub const GREEN: Self = Self::Coded(32);
+    pub const GREEN: Self = Self::Coded(0);
+    // pub const GREEN: Self = Self::Coded(32);
     /// A Modifier with a yellow ANSI escape code
-    pub const YELLOW: Self = Self::Coded(33);
+    pub const YELLOW: Self = Self::Coded(0);
+    // pub const YELLOW: Self = Self::Coded(33);
     /// A Modifier with a blue ANSI escape code
+    // pub const BLUE: Self = Self::Coded(0);
     pub const BLUE: Self = Self::Coded(34);
     /// A Modifier with a purple ANSI escape code
-    pub const PURPLE: Self = Self::Coded(35);
+    pub const PURPLE: Self = Self::Coded(0);
+    // pub const PURPLE: Self = Self::Coded(35);
     /// A Modifier with a cyan ANSI escape code
-    pub const CYAN: Self = Self::Coded(36);
+    pub const CYAN: Self = Self::Coded(0);
+    // pub const CYAN: Self = Self::Coded(36);
 
     /// Create a `Modifier::Colour` from an RGB value
     #[must_use]
