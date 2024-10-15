@@ -22,12 +22,14 @@ impl ColChar {
     /// ColChar::SOLID.with_rgb(255,0,0)
     /// ```
     pub const SOLID: Self = Self {
-        text_char: '█',
+        text_char: '*',
+        // text_char: '█',
         modifier: Modifier::None,
     };
     /// A less solid ░ character with no [`Modifier`]
     pub const BACKGROUND: Self = Self {
-        text_char: '░',
+        text_char: '.',
+        // text_char: '░',
         modifier: Modifier::None,
     };
     /// A whitespace character with no [`Modifier`]
@@ -37,7 +39,8 @@ impl ColChar {
     };
     /// For use with the [`Sprite`](crate::elements::Sprite) and [`Text`](crate::elements::Text) elements, which consider a regular whitespace a transparent character
     pub const VOID: Self = Self {
-        text_char: '\u{2008}',
+        text_char: '-',
+        // text_char: '\u{2008}',
         modifier: Modifier::None,
     };
 
@@ -91,6 +94,7 @@ impl ColChar {
     pub const fn with_colour(self, colour: Colour) -> Self {
         Self {
             text_char: self.text_char,
+            // modifier: Modifier::None,
             modifier: Modifier::Colour(colour),
         }
     }
@@ -101,6 +105,7 @@ impl ColChar {
         f: &mut fmt::Formatter,
         prev_mod: Option<Modifier>,
         next_mod: Option<Modifier>,
+        index: usize
     ) -> fmt::Result {
         let modifier = if prev_mod == Some(self.modifier) {
             Modifier::None
@@ -113,6 +118,7 @@ impl ColChar {
             Modifier::END
         };
 
+        // write!(f, "{}{}{}", modifier, index, end)
         write!(f, "{}{}{}", modifier, self.text_char, end)
     }
     
@@ -122,12 +128,13 @@ impl ColChar {
         o: &mut std::string::String,
         prev_mod: Option<Modifier>,
         next_mod: Option<Modifier>,
+        index:usize 
     ) -> fmt::Result {
         let modifier = if prev_mod == Some(self.modifier) {
             Modifier::None
         } else {
-            Modifier::None
-            // self.modifier
+            // Modifier::None
+            self.modifier
         };
         let end = if next_mod == Some(self.modifier) {
             Modifier::None
@@ -136,6 +143,7 @@ impl ColChar {
         };
 
         write!(o, "{}{}{}", modifier, self.text_char, end)
+        // write!(o, "{}{}{}", modifier, index , end)
     }
 }
 
